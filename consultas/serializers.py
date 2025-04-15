@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from .models import ProfissionalSaude, Consulta
+from .models import Profissional, Consulta
 
-class ProfissionalSaudeSerializer(serializers.ModelSerializer):
+class ProfissionalSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ProfissionalSaude
+        model = Profissional
         fields = '__all__'
 
     def validate_nome_social(self, value):
