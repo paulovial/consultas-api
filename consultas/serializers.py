@@ -9,7 +9,7 @@ class ProfissionalSerializer(serializers.ModelSerializer):
     def validate_nome_social(self, value):
         return value.strip()
 
-    def validate_contrato(self, value):
+    def validate_contato(self, value):
         if not value.strip().isdigit():
             raise serializers.ValidationError("Contato deve conter apenas números.")
         return value

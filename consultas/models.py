@@ -12,9 +12,11 @@ class Profissional(models.Model):
 class Consulta(models.Model):
     data = models.DateTimeField(max_length=255)
     profissional = models.ForeignKey(Profissional, on_delete=models.CASCADE, related_name='consultas')
+    valor = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    status_pagamento = models.CharField(max_length=50, default='PENDENTE')
 
     def __str__(self):
-        return f"{self.profissional.nome_socil} - {self.data}"
+        return f"{self.profissional.nome_social} - {self.data}"
 
 from consultas.models import Consulta, Profissional
 

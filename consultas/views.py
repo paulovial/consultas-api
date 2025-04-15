@@ -1,5 +1,12 @@
-from rest_framework import viewsets, filters
-from .models import Profissional, Consulta
+from decimal import Decimal, ROUND_HALF_UP
+
+from django.shortcuts import render, get_object_or_404
+
+from rest_framework import viewsets, filters, status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from .models import Profissional, Consulta, Pagamento
 from .serializers import ProfissionalSerializer, ConsultaSerializer
 
 class ProfissionalViewSet(viewsets.ModelViewSet):
@@ -16,28 +23,17 @@ class ConsultaViewSet(viewsets.ModelViewSet):
             return Consulta.objects.filter(profissional_id=profissional_id)
         return Consulta.objects.all()
 
-from django.shortcuts import render
-
 def home(request):
     return render(request, 'consultas/home.html')
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from decimal import Decimal
-from consultas.models import Consulta, Profissional
 
 class MockPagamentoView(APIView):
     def post(self, request, *args, **kwargs):
         consulta_id = request.data.get('consulta_id')
-        try:
-            consulta = Consulta.objects.get(id=consulta_id)
-            profissional = consulta.profissional
-        except Consulta.DoesNotExist:
-            return Response({'erro': 'Consulta não encontrada.'}, status=status.HTTP_404_NOT_FOUND)
+        consulta = get_object_or_404(Consulta, id=consulta_id)
+        profissional = consulta.profissional
 
         valor_total = Decimal(consulta.valor)
-        valor_profissional = round(valor_total * Decimal('0.90'), 2)
+        valor_profissional = (valor_total * Decimal('0.90')).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
         valor_plataforma = valor_total - valor_profissional
 
         mock_response = {
@@ -58,10 +54,10 @@ class MockPagamentoView(APIView):
                 }
             ]
         }
-        consulta.status_pagamento = 'PENDENTE'  # Ou outro status dependendo do seu modelo
+
+        consulta.status_pagamento = 'PENDENTE'
         consulta.save()
 
-        # Você pode criar um objeto de pagamento, caso tenha o modelo para isso
         Pagamento.objects.create(
             consulta=consulta,
             valor=valor_total,
@@ -71,5 +67,4 @@ class MockPagamentoView(APIView):
         )
 
         return Response(mock_response, status=status.HTTP_200_OK)
-
 
