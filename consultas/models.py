@@ -11,7 +11,7 @@ class Profissional(models.Model):
 
 class Consulta(models.Model):
     data = models.DateTimeField(max_length=255)
-    profissional = models.ForeignKey(ProfissionalSaude, on_delete=models.CASCADE, related_name='consultas')
+    profissional = models.ForeignKey(Profissional, on_delete=models.CASCADE, related_name='consultas')
 
     def __str__(self):
         return f"{self.profissional.nome_socil} - {self.data}"
