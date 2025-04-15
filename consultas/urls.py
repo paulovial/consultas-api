@@ -1,10 +1,10 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ProfissionalSaudeViewSet, ConsultaViewSet
+from .views import ProfissionalViewSet, ConsultaViewSet
 from .views import MockPagamentoView
 
 router = DefaultRouter()
-router.register(r'profissionais', ProfissionalSaudeViewSet)
+router.register(r'profissionais', ProfissionalViewSet)
 router.register(r'consultas', ConsultaViewSet)
 
 urlpatterns = [
