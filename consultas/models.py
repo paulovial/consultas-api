@@ -1,6 +1,6 @@
 from django.db import models
 
-class ProfissionalSaude(models.Model):
+class Profissional(models.Model):
     nome_social = models.CharField(max_length=255)
     profissao = models.CharField(max_length=255)
     endereco = models.CharField(max_length=255)
