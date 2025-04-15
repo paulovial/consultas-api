@@ -1,10 +1,10 @@
 from rest_framework import viewsets, filters
-from .models import ProfissionalSaude, Consulta
-from .serializers import ProfissionalSaudeSerializer, ConsultaSerializer
+from .models import Profissional, Consulta
+from .serializers import ProfissionalSerializer, ConsultaSerializer
 
-class ProfissionalSaudeViewSet(viewsets.ModelViewSet):
-    queryset = ProfissionalSaude.objects.all()
-    serializer_class = ProfissionalSaudeSerializer
+class ProfissionalViewSet(viewsets.ModelViewSet):
+    queryset = Profissional.objects.all()
+    serializer_class = ProfissionalSerializer
 
 class ConsultaViewSet(viewsets.ModelViewSet):
     queryset = Consulta.objects.all()    
