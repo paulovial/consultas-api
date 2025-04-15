@@ -15,3 +15,9 @@ class ConsultaViewSet(viewsets.ModelViewSet):
         if profissional_id:
             return Consulta.objects.filter(profissional_id=profissional_id)
         return Consulta.objects.all()
+
+from django.shortcuts import render
+
+def home(request):
+    return render(request, 'consultas/home.html')
+
