@@ -1,11 +1,11 @@
-#Imagem base oficial do Python
+# Imagem base oficial do Python
 FROM python:3.12
 
-#Variaveis de ambiente para evitar criacao de arquivos .pyc e forcar UTF-8
+# Variáveis de ambiente
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Instala dependencias do sistema (build-essential, libpq para PostgreSQL, etc.)
+# Instala dependências de sistema
 RUN apt-get update \
   && apt-get install -y build-essential libpq-dev curl \
   && apt-get clean
@@ -14,21 +14,25 @@ RUN apt-get update \
 RUN curl -sSL https://install.python-poetry.org | python3 -
 ENV PATH="/root/.local/bin:$PATH"
 
-#Cria diretorio da aplicacao
+# Cria diretório da aplicação
 WORKDIR /app
 
-#Copia apenas arquivos necessarios para instalar dependencias
+# Copia apenas arquivos de dependência primeiro (para cache eficiente)
 COPY pyproject.toml poetry.lock* /app/
 
-# Instala dependencias com Poetry
+# Instala dependências com Poetry sem criar venv
 RUN poetry config virtualenvs.create false \
   && poetry install --no-interaction --no-root
 
-# Copia o restante do codigo da aplicacao
+# Copia o restante da aplicação
 COPY . /app/
 
-# Expoe a porta 
+# Expõe a porta 8000
 EXPOSE 8000
 
-# Comando padrao: inicia o servidor
+# Define o PYTHONPATH explicitamente para o diretório da aplicação
+ENV PYTHONPATH=/app
+
+# Comando padrão
 CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000"]
+

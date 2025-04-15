@@ -5,15 +5,18 @@ services:
     build: .
     command: >
       sh -c "python manage.py migrate &&
-             gunicorn consultas_api.wsgi:application --bind 0.0.0.0:8000"
+             gunicorn core.wsgi:application --bind 0.0.0.0:8000"
     ports:
       - "8000:8000"
     volumes:
-      - .:/app  # Aqui a definição do volume está correta
+      - .:/app
+    working_dir: /app
     depends_on:
       - db
     env_file:
       - .env
+    environment:
+      - PYTHONPATH=.
 
   db:
     image: postgres:15
@@ -22,10 +25,11 @@ services:
       POSTGRES_USER: consultas
       POSTGRES_PASSWORD: consultas
     volumes:
-      - postgres_data:/var/lib/postgresql/data  # Volume correto
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
 volumes:
-  postgres_data: {}  # Volumes agora são mapeados corretamente
+  postgres_data: {}
+
 
